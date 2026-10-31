@@ -9,14 +9,10 @@ export default function Header({ variant = "home" }) {
 
   if (variant === "article") {
     return (
-      <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/85 backdrop-blur-md">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-          <Link href="/blog" className="text-sm font-mono text-emerald-400 hover:underline">
-            ← All Engineering Articles
-          </Link>
-          <Link href="/" className="text-xs font-mono text-slate-400 hover:text-slate-200">
-            Portfolio Home
-          </Link>
+      <header className="site-header">
+        <div className="article-nav">
+          <Link href="/blog">← All Engineering Articles</Link>
+          <Link href="/">Portfolio Home</Link>
         </div>
       </header>
     );
@@ -24,19 +20,16 @@ export default function Header({ variant = "home" }) {
 
   if (variant === "blog") {
     return (
-      <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/85 backdrop-blur-md">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <Link href="/" className="font-mono text-lg font-bold tracking-tight">
-            ← trilok<span className="text-emerald-400">@blog</span>:~#
+      <header className="site-header">
+        <div className="article-nav">
+          <Link href="/" className="blog-brand">
+            ← trilok<span className="hero-accent">@blog</span>:~#
           </Link>
-          <div className="flex items-center gap-3">
-            <Link href="/admin" className="rounded-lg border border-slate-700 px-3 py-2 text-xs font-mono text-slate-200 transition hover:border-emerald-400">
+          <div className="blog-header-actions">
+            <Link href="/admin" className="site-header-action">
               Admin
             </Link>
-            <Link
-              href="/cv"
-              className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-bold text-slate-950 transition hover:bg-emerald-400"
-            >
+            <Link href="/cv" className="site-header-action">
               View / Print CV
             </Link>
           </div>
@@ -45,50 +38,44 @@ export default function Header({ variant = "home" }) {
     );
   }
 
+  const closeMenu = () => setMenuOpen(false);
+
   return (
-    <>
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#090e1b]/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
-          <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="Trilok Neupane home">
-            <span className="font-mono text-xl font-black text-cyan-300">&lt;/&gt;</span>
-            <span className="text-base font-bold text-white sm:text-lg">
-              Trilok<span className="text-cyan-300"> Neupane</span>
-            </span>
-          </Link>
-          <nav className="hidden items-center gap-7 text-sm text-slate-300 md:flex">
-            <a href="#projects" className="transition hover:text-cyan-300">Projects</a>
-            <a href="#skills" className="transition hover:text-cyan-300">Expertise</a>
-            <Link href="/blog" className="transition hover:text-cyan-300">Articles</Link>
-            <a href="#experience" className="transition hover:text-cyan-300">Experience</a>
-          </nav>
-          <div className="flex shrink-0 items-center gap-3">
-            <Link
-              href="/cv"
-              className="hidden rounded-lg bg-cyan-300 px-4 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-cyan-200 sm:inline-flex"
-            >
-              View CV
-            </Link>
-            <button
-              type="button"
-              onClick={() => setMenuOpen((open) => !open)}
-              aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
-              aria-expanded={menuOpen}
-              className="inline-flex size-10 items-center justify-center rounded-lg border border-white/15 text-white transition hover:border-cyan-300 hover:text-cyan-300 md:hidden"
-            >
-              {menuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
-        </div>
-        {menuOpen && (
-          <nav className="grid gap-1 border-t border-white/10 px-6 py-3 text-sm text-slate-200 md:hidden">
-            <a href="#projects" onClick={() => setMenuOpen(false)} className="rounded-lg px-3 py-3 hover:bg-white/5">Projects</a>
-            <a href="#skills" onClick={() => setMenuOpen(false)} className="rounded-lg px-3 py-3 hover:bg-white/5">Expertise</a>
-            <Link href="/blog" onClick={() => setMenuOpen(false)} className="rounded-lg px-3 py-3 hover:bg-white/5">Articles</Link>
-            <a href="#experience" onClick={() => setMenuOpen(false)} className="rounded-lg px-3 py-3 hover:bg-white/5">Experience</a>
-            <Link href="/cv" onClick={() => setMenuOpen(false)} className="rounded-lg px-3 py-3 text-cyan-300 hover:bg-white/5">View CV</Link>
-          </nav>
-        )}
-      </header>
-    </>
+    <header className="site-header">
+      <div className="site-header-inner">
+        <Link href="/" className="brand" aria-label="Trilok Neupane home">
+          <span className="brand-mark">&lt;/&gt;</span>
+          <span className="brand-name">Trilok Neupane</span>
+        </Link>
+        <nav className="site-nav" aria-label="Main navigation">
+          <a href="#projects">Projects</a>
+          <a href="#skills">Expertise</a>
+          <Link href="/blog">Articles</Link>
+          <a href="#experience">Experience</a>
+        </nav>
+        <Link href="/cv" className="site-header-action">
+          View CV
+        </Link>
+        <button
+          type="button"
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-navigation"
+          className="menu-toggle"
+        >
+          {menuOpen ? <X size={18} /> : <Menu size={18} />}
+        </button>
+      </div>
+      {menuOpen && (
+        <nav id="mobile-navigation" className="mobile-nav" aria-label="Mobile navigation">
+          <a href="#projects" onClick={closeMenu}>Projects</a>
+          <a href="#skills" onClick={closeMenu}>Expertise</a>
+          <Link href="/blog" onClick={closeMenu}>Articles</Link>
+          <a href="#experience" onClick={closeMenu}>Experience</a>
+          <Link href="/cv" onClick={closeMenu}>View CV</Link>
+        </nav>
+      )}
+    </header>
   );
 }

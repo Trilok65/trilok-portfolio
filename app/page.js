@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ArrowRight, ArrowUpRight, Terminal as TerminalIcon } from "lucide-react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
@@ -124,234 +125,314 @@ const projects = [
 const filteredProjects = (activeTab, items) =>
   activeTab === "all" ? items : items.filter((p) => p.category === activeTab);
 
+function CommandTerminal() {
+  const [command, setCommand] = useState("");
+  const [output, setOutput] = useState("Type a command or choose one above.");
+
+  const runCommand = (input) => {
+    const normalized = input.trim().toLowerCase();
+    setCommand("");
+
+    if (normalized === "help") {
+      setOutput("Available commands: skills, work, contact");
+      return;
+    }
+
+    const destinations = {
+      skills: "skills",
+      work: "projects",
+      contact: "contact",
+    };
+
+    if (!destinations[normalized]) {
+      setOutput(`Command not found: ${normalized || "(empty)"}. Try: skills, work, contact`);
+      return;
+    }
+
+    setOutput(`Navigating to ${normalized}...`);
+    document.getElementById(destinations[normalized])?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  return (
+    <div className="terminal" aria-label="Interactive portfolio terminal">
+      <div className="terminal-bar">
+        <div className="terminal-lights" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+        <span>trilok@workstation:~</span>
+        <TerminalIcon size={13} aria-hidden="true" />
+      </div>
+      <div className="terminal-body">
+        <p className="terminal-greeting">
+          <strong>Environment ready.</strong><br />
+          Web engineering · Linux · Docker · CI/CD
+        </p>
+        <ul className="terminal-command-list" aria-label="Available terminal commands">
+          {["skills", "work", "contact"].map((item) => (
+            <li key={item}>
+              <button type="button" onClick={() => runCommand(item)}>
+                <span className="terminal-prompt">$</span> {item}
+              </button>
+            </li>
+          ))}
+        </ul>
+        <p className="terminal-history" role="status">{output}</p>
+        <form
+          className="terminal-form"
+          onSubmit={(event) => {
+            event.preventDefault();
+            runCommand(command);
+          }}
+        >
+          <label htmlFor="terminal-command">$</label>
+          <input
+            id="terminal-command"
+            autoComplete="off"
+            value={command}
+            onChange={(event) => setCommand(event.target.value)}
+            placeholder="type a command"
+            aria-label="Type skills, work, or contact"
+          />
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function PipelineGraphic() {
+  return (
+    <svg
+      className="pipeline-graphic"
+      viewBox="0 0 360 118"
+      role="img"
+      aria-label="Continuous integration pipeline from commit through build and deploy"
+    >
+      <path className="pipeline-line" d="M42 40H318M42 40v35h276V40" fill="none" />
+      <circle className="pipeline-node" cx="42" cy="40" r="7" />
+      <circle className="pipeline-node" cx="134" cy="40" r="7" />
+      <circle className="pipeline-node" cx="226" cy="40" r="7" />
+      <circle className="pipeline-node" cx="318" cy="40" r="7" />
+      <circle className="pipeline-pulse" cx="42" cy="40" r="3" />
+      <circle className="pipeline-pulse" cx="134" cy="40" r="3" />
+      <circle className="pipeline-pulse" cx="226" cy="40" r="3" />
+      <circle className="pipeline-pulse" cx="318" cy="40" r="3" />
+      <text className="pipeline-label" x="42" y="66" textAnchor="middle">COMMIT</text>
+      <text className="pipeline-label" x="134" y="66" textAnchor="middle">BUILD</text>
+      <text className="pipeline-label" x="226" y="66" textAnchor="middle">TEST</text>
+      <text className="pipeline-label" x="318" y="66" textAnchor="middle">DEPLOY</text>
+      <text className="pipeline-label" x="180" y="106" textAnchor="middle">AUTOMATED DELIVERY PIPELINE</text>
+    </svg>
+  );
+}
+
 export default function Portfolio() {
   const [activeTab, setActiveTab] = useState("all");
   const projectsToShow = filteredProjects(activeTab, projects);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans">
+    <div className="portfolio-shell">
       <Header />
 
-      <section className="hero-photo relative isolate flex min-h-[620px] items-center overflow-hidden border-b border-white/10 sm:min-h-[700px]">
-        <div className="pointer-events-none absolute inset-0 bg-slate-950/55" aria-hidden="true" />
-        <div className="relative mx-auto w-full max-w-6xl px-6 py-20 text-center sm:py-28">
-          <p className="mx-auto inline-flex max-w-full items-center gap-2 rounded-full border border-cyan-200/20 bg-cyan-200/10 px-4 py-2 text-xs font-semibold uppercase text-cyan-200">
-            <span className="size-2 rounded-full bg-emerald-400" />
+      <section className="hero-section">
+        <div className="hero-copy">
+          <p className="eyebrow">
+            <span className="status-dot" aria-hidden="true" />
             Web engineering · DevOps · Lalitpur, Nepal
           </p>
-          <h1 className="mx-auto mt-7 max-w-5xl font-extrabold leading-[1.05] text-white">
-            <span className="block text-2xl font-semibold text-white/85 sm:text-3xl">I build</span>
-            <span className="mt-2 block text-4xl sm:text-7xl">
-              <span className="text-cyan-300">digital</span> experiences
-            </span>
-            <span className="mt-3 block text-2xl font-semibold sm:text-4xl">
-              and bring them to <span className="text-cyan-300 underline decoration-cyan-300/50 decoration-2 underline-offset-8">production.</span>
-            </span>
+          <h1 className="hero-title">
+            <span className="hero-line-mask"><span className="hero-line">I build</span></span>
+            <span className="hero-line-mask"><span className="hero-line"><span className="hero-accent">digital</span> experiences</span></span>
+            <span className="hero-line-mask"><span className="hero-line">and bring them to <span className="hero-accent">production.</span></span></span>
           </h1>
-          <div className="mx-auto mt-7 max-w-2xl text-base leading-7 text-slate-200 sm:text-lg">
-            <p className="font-semibold text-white">Trilok Neupane</p>
-            <p className="mt-1 text-slate-300">
-              Web developer and junior DevOps engineer working across Next.js, WordPress, Linux, and cloud deployments.
-            </p>
-          </div>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <a href="#projects" className="rounded-lg bg-cyan-300 px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-200">
-              Explore my work
+          <p className="hero-description">
+            <span className="hero-name">Trilok Neupane</span>
+            Web developer and junior DevOps engineer working across Next.js, WordPress, Linux, and cloud deployments.
+          </p>
+          <div className="hero-actions">
+            <a href="#projects" className="button-primary">
+              Explore my work <ArrowRight size={14} aria-hidden="true" />
             </a>
-            <a href="mailto:neupanetrilok44@gmail.com" className="rounded-lg border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:border-cyan-200/60">
-              Hire Me
+            <a href="mailto:neupanetrilok44@gmail.com" className="button-secondary">
+              Hire Me <ArrowUpRight size={14} aria-hidden="true" />
             </a>
           </div>
-
+        </div>
+        <div className="hero-terminal-wrap">
+          <CommandTerminal />
         </div>
       </section>
 
-      <section className="border-b border-white/10 bg-[#0b1224]">
-        <div className="mx-auto grid max-w-6xl gap-px px-6 py-5 sm:grid-cols-3">
-          <div className="px-4 py-3 text-center sm:text-left">
-            <p className="text-2xl font-extrabold text-white">03</p>
-            <p className="mt-1 text-xs uppercase text-slate-400">Live production sites</p>
-          </div>
-          <div className="border-white/10 px-4 py-3 text-center sm:border-l sm:text-left">
-            <p className="text-2xl font-extrabold text-white">05</p>
-            <p className="mt-1 text-xs uppercase text-slate-400">Featured builds</p>
-          </div>
-          <div className="border-white/10 px-4 py-3 text-center sm:border-l sm:text-left">
-            <p className="text-2xl font-extrabold text-white">Web + Ops</p>
-            <p className="mt-1 text-xs uppercase text-slate-400">From interface to deployment</p>
-          </div>
+      <section className="stats-strip" aria-label="Portfolio at a glance">
+        <div className="stat-cell">
+          <p className="stat-value">03</p>
+          <p className="stat-label">Live production sites</p>
+        </div>
+        <div className="stat-cell">
+          <p className="stat-value">05</p>
+          <p className="stat-label">Featured builds</p>
+        </div>
+        <div className="stat-cell">
+          <p className="stat-value">Web + Ops</p>
+          <p className="stat-label">From interface to deployment</p>
         </div>
       </section>
 
-      <section id="projects" className="mx-auto max-w-6xl border-t border-white/10 px-6 py-20">
-        <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+      <section id="projects" className="content-section">
+        <div className="section-heading-row">
           <div>
-            <p className="font-mono text-sm uppercase tracking-wider text-emerald-400">
-              // Selected work
-            </p>
-            <h2 className="mt-1 text-3xl font-bold">Projects made for the real world</h2>
+            <p className="section-index">01 // Work</p>
+            <h2 className="section-title">Projects made for the real world</h2>
           </div>
-
-          <div className="flex flex-wrap gap-2">
-            {[
-              { id: "all", label: "All Projects" },
-              { id: "live", label: "Live Websites" },
-              { id: "backend", label: "PHP / MySQL Systems" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`rounded-lg px-4 py-2 text-xs font-mono transition ${
-                  activeTab === tab.id
-                    ? "bg-emerald-500 font-bold text-slate-950"
-                    : "border border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+          <p className="section-aside">Selected production work, client platforms, and full-stack systems.</p>
         </div>
-
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {projectsToShow.map((project, index) => (
-            <div
-              key={`${project.title}-${index}`}
-              className="flex min-h-[420px] min-w-0 flex-col justify-between rounded-xl border border-white/10 bg-[#101a34] p-6 transition hover:border-cyan-200/40 hover:bg-[#14203e]"
+        <div className="project-filters" aria-label="Filter projects">
+          {[
+            { id: "all", label: "All Projects" },
+            { id: "live", label: "Live Websites" },
+            { id: "backend", label: "PHP / MySQL Systems" },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveTab(tab.id)}
+              aria-pressed={activeTab === tab.id}
+              className="filter-button"
             >
-              <div>
-                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-xs font-mono text-slate-400">{project.role}</span>
-                  <span
-                    className={`rounded-full px-2.5 py-1 text-xs font-mono ${
-                      project.live
-                        ? "border border-emerald-400/30 bg-emerald-400/10 text-emerald-300"
-                        : "bg-slate-800 text-slate-300"
-                    }`}
-                  >
-                    {project.live ? `● ${project.status}` : project.status}
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        <div className="project-list">
+          {projectsToShow.map((project, index) => (
+            <article
+              key={`${project.title}-${index}`}
+              className="project-row"
+            >
+              <div className="project-topline">
+                <div className="project-meta">
+                  <span className="project-index">
+                    {String(index + 1).padStart(2, "0")} / {String(projectsToShow.length).padStart(2, "0")}
+                  </span>
+                  <span>{project.role}</span>
+                  <span className="project-status">
+                    {project.live && <span className="status-dot" aria-hidden="true" />}
+                    {project.status}
                   </span>
                 </div>
-
-                <h3 className="mb-2 text-xl font-bold text-slate-100">{project.title}</h3>
-                <p className="mb-4 text-sm text-slate-400">{project.description}</p>
-
-                <div className="mb-4 flex flex-wrap gap-2">
-                  {project.stack.map((tech) => (
-                    <span
-                      key={tech}
-                      className="rounded bg-slate-950 border border-slate-800 px-2.5 py-1 font-mono text-xs text-cyan-300"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                <ul className="mb-6 space-y-1.5 text-xs text-slate-300">
-                  {project.highlights.map((item, i) => (
-                    <li key={`${project.title}-${i}`} className="flex items-start gap-2">
-                      <span className="text-emerald-400">▹</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
-
-              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800/80 pt-4 text-xs font-mono">
-                <span className="max-w-[200px] truncate text-slate-400">{project.domainLabel}</span>
+              <div className="project-title-wrap">
+                <h3 className="project-title">{project.title}</h3>
+                <ArrowUpRight className="project-arrow" size={20} aria-hidden="true" />
+              </div>
+              <p className="project-description">{project.description}</p>
+              <ul className="project-tags" aria-label="Technology stack">
+                {project.stack.map((tech) => <li key={tech}>{tech}</li>)}
+              </ul>
+              <ul className="project-highlights">
+                {project.highlights.map((item, i) => (
+                  <li key={`${project.title}-${i}`}>{item}</li>
+                ))}
+              </ul>
+              <div className="project-footer">
+                <span>{project.domainLabel}</span>
                 {project.live ? (
                   <a
                     href={project.live}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-lg bg-emerald-500 px-4 py-2 font-bold text-slate-950 transition hover:bg-emerald-400"
+                    className="project-link"
                   >
-                    Visit Live Site ↗
+                    Visit Live Site <ArrowUpRight size={13} aria-hidden="true" />
                   </a>
                 ) : (
-                  <span className="text-slate-500">Full-Stack Database Build</span>
+                  <span>Full-Stack Database Build</span>
                 )}
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </section>
 
-      <section id="skills" className="mx-auto max-w-6xl border-t border-white/10 px-6 py-20">
-        <div className="mb-10">
-          <p className="font-mono text-sm uppercase tracking-wider text-emerald-400">
-              // What I work with
-          </p>
-          <h2 className="mt-1 text-3xl font-bold">DevOps, Web Engineering &amp; CMS</h2>
+      <section id="skills" className="content-section">
+        <div className="section-heading-row">
+          <div>
+            <p className="section-index">02 // Capabilities</p>
+            <h2 className="section-title">DevOps, Web Engineering &amp; CMS</h2>
+          </div>
+          <p className="section-aside">A practical toolkit spanning interfaces, infrastructure, and delivery.</p>
         </div>
-
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="skills-grid">
           {skillCategories.map((group, idx) => (
-            <div
-              key={idx}
-              className="rounded-xl border border-white/10 bg-[#101a34] p-6 transition hover:border-cyan-200/40"
-            >
-              <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-lg font-bold text-slate-100">{group.title}</h3>
-                <span className="rounded bg-slate-800 px-2.5 py-1 font-mono text-xs text-emerald-400">
-                  {group.badge}
-                </span>
+            <article className="skill-card" key={idx}>
+              <div className="skill-card-heading">
+                <h3 className="skill-card-title">{group.title}</h3>
+                <span className="skill-badge">{group.badge}</span>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {group.skills.map((skill, sIdx) => (
-                  <span
-                    key={`${skill}-${sIdx}`}
-                    className="rounded-lg border border-slate-800 bg-slate-950 px-3 py-1.5 text-xs font-medium text-slate-300"
-                  >
-                    {skill}
-                  </span>
-                ))}
+              <ul className="skill-list">
+                {group.skills.map((skill, sIdx) => <li key={`${skill}-${sIdx}`}>{skill}</li>)}
+              </ul>
+            </article>
+          ))}
+          <article className="skill-card">
+            <p className="graphic-card-title">Delivery / CI-CD</p>
+            <PipelineGraphic />
+          </article>
+          <article className="skill-card">
+            <p className="graphic-card-title">Infrastructure / Status</p>
+            <div className="server-status">
+              <span className="server-pulse" aria-hidden="true">
+                <span className="status-dot" />
+              </span>
+              <div className="server-copy">
+                <strong>Systems operational</strong>
+                <span>LINUX · DOCKER · CLOUD</span>
               </div>
             </div>
-          ))}
+          </article>
         </div>
       </section>
 
-      <section id="experience" className="mx-auto max-w-6xl border-t border-white/10 px-6 py-20">
-        <div className="mb-10">
-          <p className="font-mono text-sm uppercase tracking-wider text-emerald-400">
-            // Career Progression
-          </p>
-          <h2 className="mt-1 text-3xl font-bold">Work Experience &amp; Training</h2>
+      <section id="experience" className="content-section">
+        <div className="section-heading-row">
+          <div>
+            <p className="section-index">03 // Experience</p>
+            <h2 className="section-title">Work Experience &amp; Training</h2>
+          </div>
         </div>
-
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="space-y-3 rounded-2xl border border-emerald-500/40 bg-slate-900/50 p-6">
-            <span className="rounded bg-emerald-500/15 px-2.5 py-1 font-mono text-xs text-emerald-400">
+        <div className="experience-grid">
+          <article className="experience-card">
+            <span className="experience-date">
               2026 – Present • Current Role
             </span>
-            <h3 className="text-xl font-bold">Web &amp; Deployment Engineer</h3>
-            <p className="text-sm text-slate-400">Nepal Exporting IT • Khumaltar, Lalitpur</p>
-            <ul className="list-inside list-disc space-y-2 pt-2 text-xs text-slate-300">
+            <h3 className="experience-title">Web &amp; Deployment Engineer</h3>
+            <p className="experience-org">Nepal Exporting IT • Khumaltar, Lalitpur</p>
+            <ul className="experience-list">
               <li>Built and deployed nepalexportingit.com and The Mind Podcast staging setup.</li>
               <li>Manage Vercel CI/CD deployments, custom domain DNS cutovers, SSL, and technical SEO.</li>
             </ul>
-          </div>
+          </article>
 
-          <div className="space-y-3 rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
-            <span className="font-mono text-xs text-slate-400">Nov 2024 – Feb 2025</span>
-            <h3 className="text-xl font-bold">Front-End Developer Intern</h3>
-            <p className="text-sm text-slate-400">BR CODEX Pvt. Ltd. • Talchhikhel, Lalitpur</p>
-            <ul className="list-inside list-disc space-y-2 pt-2 text-xs text-slate-300">
+          <article className="experience-card">
+            <span className="experience-date">Nov 2024 – Feb 2025</span>
+            <h3 className="experience-title">Front-End Developer Intern</h3>
+            <p className="experience-org">BR CODEX Pvt. Ltd. • Talchhikhel, Lalitpur</p>
+            <ul className="experience-list">
               <li>Built responsive web interfaces across desktop, tablet, and mobile devices.</li>
               <li>Integrated JavaScript frameworks and optimized page load performance.</li>
             </ul>
-          </div>
+          </article>
 
-          <div className="space-y-3 rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
-            <span className="font-mono text-xs text-cyan-400">3-Month Intensive + BCA (2026)</span>
-            <h3 className="text-xl font-bold">DevOps Training &amp; BCA Degree</h3>
-            <p className="text-sm text-slate-400">TechAxis &amp; Caribbean College (TU)</p>
-            <ul className="list-inside list-disc space-y-2 pt-2 text-xs text-slate-300">
+          <article className="experience-card">
+            <span className="experience-date">3-Month Intensive + BCA (2026)</span>
+            <h3 className="experience-title">DevOps Training &amp; BCA Degree</h3>
+            <p className="experience-org">TechAxis &amp; Caribbean College (TU)</p>
+            <ul className="experience-list">
               <li>Completed Linux, networking, CI/CD, and Git training at TechAxis.</li>
               <li>Graduated with a Bachelor of Computer Applications (BCA).</li>
             </ul>
-          </div>
+          </article>
         </div>
       </section>
 
